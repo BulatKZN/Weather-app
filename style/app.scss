@@ -28,6 +28,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .center-background{
+    background-color: $blue;
+  }
+
+  &.yellow {
+    .center-background{
+      background-color: $yellow;
+    }
+  }
+
+  &.red {
+    .center-background{
+      background-color: $red;
+    }
+  }
 }
 
 .center-background {
@@ -101,7 +117,7 @@
 .parameteres-block{
   display: flex;
   color: $gray;
-  font-size: 40px;
+  font-size: 16px;
 }
 
 // .parameters-item{
