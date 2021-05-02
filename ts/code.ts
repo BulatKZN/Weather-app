@@ -1,3 +1,9 @@
+
+import {findColor} from "./utilities";
+import {getWeather} from "./api";
+
+
+
 const dateEl = document.querySelector('.date');
 const timeEl = document.querySelector('.time');
 const temperatureEl = document.querySelector('.temperature');
@@ -5,6 +11,7 @@ const humidityEl = document.querySelector('.humidity');
 const pressureEl = document.querySelector('.pressure');
 const visibilityEl = document.querySelector('.visibility');
 const centerEl = document.querySelector('.center');
+const citySelectEl: HTMLSelectElement = document.querySelector('.city-select');
 
 
 
@@ -21,22 +28,20 @@ setInterval(() => {
     timeEl.innerHTML = `${date.getHours()} : ${date.getMinutes()} : ${date.getSeconds()}`;
 } , 1000) ;
 
-const apiKey = '7155a3e99be9f1b890e8660d2eeb421d';
-const apiUrl = 'http://api.weatherstack.com/current';
+let cityName = localStorage.getItem('cityName') || 'kazan';
 
-const colorsMap = {
-    blue: 10,
-    yellow: 20
-}
+citySelectEl.value = cityName;
 
-function findColor(temperature : number) : string {
-    for (let [key,value] of (Object as any).entries(colorsMap)){
-        if(temperature < value) {
-            return key;
-        }
-    }
-    return 'red';
-}
+
+citySelectEl.addEventListener('change', (event) => {
+    cityName = citySelectEl.value;
+    // document.cookie = `cityName=${cityName}`;
+    localStorage.setItem('cityName', cityName);
+    updateWeather();
+})
+
+
+
 
 // Query parameters
 // начинаются со знака ?
@@ -48,20 +53,17 @@ updateWeather();
 
 setInterval(() => {
     updateWeather();
-}, 5000);
+}, 15000);
 
 function updateWeather () {
-    getWeather().then((resp)=> {
+    getWeather(cityName).then((resp) => {
         let {current} = resp;
-        updateValues(current)
-    }
+        console.log(resp)
+        updateValues(current);
+    })
 }
 
-function getWeather () {
-    return fetch(`${apiUrl}?query=kazan&access_key=${apiKey}`).then((resp) => {
-        return resp.json();
-    }) 
-}
+
 
 function updateValues ({temperature, pressure, humidity,visibility}) {
     temperatureEl.innerHTML = temperature;
